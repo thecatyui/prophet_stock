@@ -7,10 +7,10 @@ import prophet.plot as fp
 
 from datetime import datetime
 
-start = datetime(2018, 7, 23)
-end = datetime(2021, 7, 22)
+start = datetime(2018, 7, 24)
+end = datetime(2021, 7, 24)
 
-SB = web.DataReader('104620.KQ','yahoo',start,end)
+SB = web.DataReader('051910.KS','yahoo',start,end)
 SB.head()
 
 SB['Close'].plot(figsize=(12,6), grid=True);
@@ -37,10 +37,10 @@ superbowls = pd.DataFrame({
 })
 holidays = pd.concat((playoffs, superbowls))
 
-m = Prophet(seasonality_mode='additive', daily_seasonality=True, weekly_seasonality=15, yearly_seasonality=20,
-            changepoint_prior_scale=3, changepoint_range=0.9, n_changepoints=36, growth='linear',
-            holidays=holidays, holidays_prior_scale=0.5)
-m.add_country_holidays('KR')
+m = Prophet(seasonality_mode='additive', daily_seasonality=False, weekly_seasonality=False, yearly_seasonality=False,
+            changepoint_prior_scale=3, changepoint_range=0.9, growth='linear',
+            )
+
 m.add_seasonality(name='daily', period=1, fourier_order=12)
 m.add_seasonality(name='weekly', period=7, fourier_order=20)
 m.add_seasonality(name='monthly', period=30.5, fourier_order=15)
