@@ -1,16 +1,24 @@
+#-*- coding: utf-8 -*-
+
 import pandas as pd
 import pandas_datareader.data as web
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import datetime
+from matplotlib.pyplot import text
 from prophet import Prophet
 import prophet.plot as fp
 
 from datetime import datetime
 
+plt.rcParams["font.family"] = "NanumGothic"
+
 start = datetime(2018, 7, 24)
 end = datetime(2021, 7, 24)
 
-SB = web.DataReader('051910.KS','yahoo',start,end)
+SB = web.DataReader('005490.KS','yahoo',start,end)
 SB.head()
 
 SB['Close'].plot(figsize=(12,6), grid=True);
@@ -61,7 +69,18 @@ fp.add_changepoints_to_plot(fig.gca(), m, forecast);
 forecast[['ds','yhat','yhat_lower','yhat_upper']].tail()
 plt.savefig('./stock1.png')
 
-m.plot(forecast, xlabel='Date', ylabel='Price');
+m.plot(forecast, xlabel=None, ylabel=None, figsize=(10,6));
+plt.tight_layout(pad=3)
+plt.xticks(rotation=45)
+plt.ylim([0,1000000])
+plt.xlim(pd.Timestamp('2018-07-24'), pd.Timestamp('2022-07-24'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=3))
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+plt.setp(plt.gca().get_xticklabels(), rotation=45, ha="right")
+plt.axvline(pd.Timestamp.today(), color='r', linestyle='--')
+plt.ticklabel_format(style='plain', axis='y')
+plt.text(pd.Timestamp.today(), 600000, '2021-07-26', ha='center', va='center',rotation='vertical', backgroundcolor='white', color='r')
+plt.title('인공지능 예상 주가', fontsize=16, pad=15)
 plt.savefig('./stock2.png')
 
 m.plot_components(forecast);
